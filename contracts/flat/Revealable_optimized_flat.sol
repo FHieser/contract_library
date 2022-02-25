@@ -1,4 +1,6 @@
 
+// SPDX-License-Identifier: MIT
+
 // File: @openzeppelin/contracts/utils/Strings.sol
 
 

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 // File: @openzeppelin/contracts/utils/Strings.sol
 
 // OpenZeppelin Contracts v4.4.1 (utils/Strings.sol)
