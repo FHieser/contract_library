@@ -1,0 +1,5 @@
+{
+    "name": "This will be the name every hidden NFT",
+    "description": "It still allows for a discryption though",
+    "image": "ipfs://<Address Of The Hidden Image Folder>/<Name Of The Image File>.png"
+  }
