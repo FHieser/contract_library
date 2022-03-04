@@ -71,7 +71,7 @@ using Strings for uint256;
         require(_recipients.length<maxSupply);
                  
         for (uint i = 0; i < _recipients.length; i++) {
-            safeTransferFrom(msg.sender,_recipients[i], i);
+            _safeMint(_recipients[i], 1);
         }
    }
 
