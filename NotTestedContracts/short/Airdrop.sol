@@ -2,8 +2,8 @@
 
 pragma solidity ^0.8.4;
 
-import "erc721a/contracts/ERC721A.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+//import "erc721a/contracts/ERC721A.sol";
+//import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract Airdrop is ERC721A, Ownable {
 using Strings for uint256;

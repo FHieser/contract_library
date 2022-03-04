@@ -1438,7 +1438,7 @@ contract ERC721A is
 
 pragma solidity ^0.8.4;
 
-import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
+//import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 
 contract RevealableWhitelistOptimizedContract is ERC721A, Ownable {
     using Strings for uint256;
