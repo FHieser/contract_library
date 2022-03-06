@@ -1482,7 +1482,7 @@ contract RevealableOptimizedContract is ERC721A, Ownable {
         if (msg.sender != owner()) {
             require(
                 msg.value >= cost * _mintAmount,
-                "Value for minting-transaction was to low."
+                "Value for minting-transaction is to low"
             );
         }
 
