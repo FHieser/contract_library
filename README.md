@@ -33,7 +33,7 @@ Implementing the ERC721a would probably solve that problem, but I´m to lazy to 
 ### Revealable_optimized
 
 Does, as the name implies, add a Revealable functionality to an optimized ERC721a Contract.
-Based on the basic Haslips contract,l which explains in great detail how to create a NFT Collection.
+Based on the basic Haslips contract, which explains in great detail how to create a NFT Collection.
 ->https://www.youtube.com/watch?v=fzH7Gjadmj0
 
 For the the Functionality to work there is some basic prepwork needed:
@@ -44,7 +44,7 @@ For the the Functionality to work there is some basic prepwork needed:
 
 ### RevealableWhitelistOptimizedContract
 
-I really start to make shorter Names xD
+I should really start to make shorter Names xD
 Anyway this is a Revealable Whitelist Optimized Contract. (duh)
 It´s based on the Revealable_optimized contract from before,
 but takes up the Whitelist Functionality that has been shown in the great Project of Raz
@@ -61,9 +61,8 @@ For the the Functionality to work there is some basic prepwork needed:
 
 # Basic Sample Hardhat Project
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, a sample script that deploys that contract, and an example of a task implementation, which simply lists the available accounts.
-
-Try running some of the following tasks:
+As promised I started with a testing suite in hardhat for the different contracts
+Here´s a list of possible functions to use:
 
 ```shell
 npx hardhat accounts
@@ -71,6 +70,8 @@ npx hardhat compile
 npx hardhat clean
 npx hardhat test
 npx hardhat node
-node scripts/sample-script.js
 npx hardhat help
 ```
+
+The test function is the base for the whole suite.
+Use it to start the unit tests I created for the different contracts.
