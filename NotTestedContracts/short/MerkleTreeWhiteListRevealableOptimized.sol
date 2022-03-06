@@ -1457,7 +1457,7 @@ contract RevealableWhitelistOptimizedContract is ERC721A, Ownable {
 
     // Calculated from `merkle_tree.js`
     bytes32 private merkleRoot;
-    bool public whiteListActive=true;
+    bool public whiteListActive = true;
 
     mapping(address => bool) public whitelistClaimed;
 
@@ -1479,24 +1479,39 @@ contract RevealableWhitelistOptimizedContract is ERC721A, Ownable {
     }
 
     // public
-    function mint(bytes32[] calldata _merkleProof,uint256 _mintAmount) public payable {
+    function mint(bytes32[] calldata _merkleProof, uint256 _mintAmount)
+        public
+        payable
+    {
         uint256 supply = totalSupply();
-        require(!paused,"Contract is paused");
-        require(_mintAmount > 0,"Mint Amount needs to be bigger than 0");
-        require(_mintAmount <= maxMintAmount,"Mint Amount exceeds the Maximum Allowed Mint Amount");
-        require(supply + _mintAmount <= maxSupply,"Mint Amount exceeds the Available Mint Amount");
-        
+        require(!paused, "Contract is paused");
+        require(_mintAmount > 0, "Mint Amount needs to be bigger than 0");
+        require(
+            _mintAmount <= maxMintAmount,
+            "Mint Amount exceeds the Maximum Allowed Mint Amount"
+        );
+        require(
+            supply + _mintAmount <= maxSupply,
+            "Mint Amount exceeds the Available Mint Amount"
+        );
+
         //MerkleTree Whitelist
-        if(whiteListActive){
+        if (whiteListActive) {
             require(!whitelistClaimed[msg.sender], "Address already claimed");
             bytes32 leaf = keccak256(abi.encodePacked(msg.sender));
-            require(MerkleProof.verify(_merkleProof, merkleRoot, leaf),"Invalid Merkle Proof.");
+            require(
+                MerkleProof.verify(_merkleProof, merkleRoot, leaf),
+                "Invalid Merkle Proof."
+            );
             whitelistClaimed[msg.sender] = true;
         }
-        
+
         //Owner mints for free
         if (msg.sender != owner()) {
-            require(msg.value >= cost * _mintAmount);
+            require(
+                msg.value >= cost * _mintAmount,
+                "Value for minting-transaction was to low."
+            );
         }
 
         _safeMint(msg.sender, _mintAmount);
@@ -1565,22 +1580,21 @@ contract RevealableWhitelistOptimizedContract is ERC721A, Ownable {
         baseURI = _newBaseURI;
     }
 
-    function setBaseExtension(string memory _newBaseExtension) public onlyOwner
+    function setBaseExtension(string memory _newBaseExtension)
+        public
+        onlyOwner
     {
         baseExtension = _newBaseExtension;
     }
 
     //MerkleTree Root
-    function setMerkleRoot(string memory _merkleRoot) public onlyOwner
-    {
+    function setMerkleRoot(string memory _merkleRoot) public onlyOwner {
         merkleRoot = _merkleRoot;
     }
 
     function setWhiteListActive(bool _state) public onlyOwner {
         whiteListActive = _state;
     }
-
-
 
     function pause(bool _state) public onlyOwner {
         paused = _state;

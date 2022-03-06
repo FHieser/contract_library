@@ -30,13 +30,22 @@ contract BasicNFT is ERC721A, Ownable {
 
     // public
     function mint(uint256 _mintAmount) public payable {
-        require(!paused);
-        require(_mintAmount > 0);
-        require(_mintAmount <= maxMintAmount);
-        require(totalSupply() + _mintAmount <= maxSupply);
+        require(!paused, "Contract is paused");
+        require(_mintAmount > 0, "Mint Amount needs to be bigger than 0");
+        require(
+            _mintAmount <= maxMintAmount,
+            "Mint Amount exceeds the Maximum Allowed Mint Amount"
+        );
+        require(
+            totalSupply() + _mintAmount <= maxSupply,
+            "Mint Amount exceeds the Available Mint Amount"
+        );
 
         if (msg.sender != owner()) {
-            require(msg.value >= cost * _mintAmount);
+            require(
+                msg.value >= cost * _mintAmount,
+                "Value for minting-transaction was to low."
+            );
         }
 
         _safeMint(msg.sender, _mintAmount);
