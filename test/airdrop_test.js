@@ -8,10 +8,14 @@ describe("Airdrop_flat Unit Test", function () {
         const [owner, addr1, addr2, addr3] = await ethers.getSigners();
         this.recipients = [owner.address, addr1.address, addr2.address, addr3.address];
         this.Contract = await ethers.getContractFactory("Airdrop");
+
+        this.name = "name";
+        this.symbol = "symbol";
+        this.directURI = "directURI";
     })
     //deploy contract
     beforeEach(async function () {
-        this.contract = await this.Contract.deploy("name", "symbol", "URI");
+        this.contract = await this.Contract.deploy(this.name, this.symbol, this.directURI);
 
         await this.contract.deployed();
     })
