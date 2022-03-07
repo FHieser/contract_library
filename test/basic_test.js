@@ -128,6 +128,4 @@ describe("Basic_flat Unit Test", function () {
         //Check if withdraw changed the balance of the owner by the amount of paid eth
         await expect(await this.contract.withdraw()).to.changeEtherBalance(this.owner, ethers.utils.parseEther("0.15"));
     });
-
-
 });
