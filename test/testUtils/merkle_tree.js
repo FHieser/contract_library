@@ -21,8 +21,6 @@ const whitelistAddresses = [
   "0xdD870fA1b7C4700F2BD7f44238821C26f7392148" // The address in remix
 ];
 
-0x10ffd411b9bf9635a654c97b60b00a647d67ffed7abb1e620ae074f2fc263d61;
-
 // 3. Create a new array of `leafNodes` by hashing all indexes of the `whitelistAddresses`
 // using `keccak256`. Then creates a Merkle Tree object using keccak256 as the algorithm.
 //

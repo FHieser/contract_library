@@ -1,13 +1,13 @@
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
 
-//import merkle_tree from "./testUtils/merkle_tree.js"
-
-
-describe("Basic_flat Unit Test", function () {
-
+describe("Revealable_Whitelist Unit Test", function () {
+    
     //Get List of created accounts and put them in a array 
     before(async function () {
+        //importing extern js-file
+        this.merkle_tree = require("./testUtils/merkle_tree.js");
+
         [this.owner, this.addr1, this.addr2, this.addr3] = await ethers.getSigners();
         this.recipients = [this.owner.address, this.addr1.address, this.addr2.address, this.addr3.address];
         this.Contract = await ethers.getContractFactory("RevealableWhitelistOptimizedContract");
@@ -17,9 +17,9 @@ describe("Basic_flat Unit Test", function () {
         this.directURI = "directURI";
         this.notRevealedURI = "notRevealedURI";
 
-        this.merkleRoot = merkle_tree.getRoot();
+        this.merkleRoot = this.merkle_tree.getRoot();
     })
-    
+
     //deploy contract
     beforeEach(async function () {
         this.contract = await this.Contract.deploy(this.name, this.symbol, this.directURI, this.notRevealedURI, this.merkleRoot);
@@ -138,7 +138,7 @@ describe("Basic_flat Unit Test", function () {
         expect(await this.contract.tokenURI(1)).to.equal(tokenString2);
     });
 
-    
+
     it("withdraw: correctly withdraw funds", async function () {
         //mint 3 tokens
         await this.contract.connect(this.addr1).mint(3, { value: ethers.utils.parseEther("0.15") });
