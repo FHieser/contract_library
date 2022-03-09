@@ -10,9 +10,11 @@ const keccak256 = require('keccak256');
 // 2. Collect list of wallet addresses from competition, raffle, etc.
 // Store list of addresses in some data sheeet (Google Sheets or Excel)
 const whitelistAddresses = [
-  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-  "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
-  "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"
+  //Get addresses by using npx hardhat accounts
+  //These account addresses are the first three of this list
+  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",//Owner
+  "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",//addr1
+  "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"//addr2
 ];
 
 // 3. Create a new array of `leafNodes` by hashing all indexes of the `whitelistAddresses`
@@ -24,7 +26,6 @@ const merkleTree = new MerkleTree(leafNodes, keccak256, { sortPairs: true });
 
 // 4. Get root hash of the `merkleeTree` in hexadecimal format (0x)
 const rootHash = merkleTree.getRoot();
-console.log("Root Hash: ",rootHash);
 
 function getProof(claimingAddress) {
 

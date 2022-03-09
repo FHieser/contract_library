@@ -69,7 +69,7 @@ contract RevealableWhitelistOptimizedContract is ERC721A, Ownable {
             bytes32 leaf = keccak256(abi.encodePacked(msg.sender));
             require(
                 MerkleProof.verify(_merkleProof, merkleRoot, leaf),
-                "Invalid Merkle Proof."
+                "Invalid Merkle Proof"
             );
             whitelistClaimed[msg.sender] = true;
         }

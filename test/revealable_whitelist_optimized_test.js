@@ -63,9 +63,35 @@ describe("Revealable_Whitelist Unit Test", function () {
         await expect(this.contract.mint(this.merkle_tree.getProof(this.owner.address),1)).to.be.revertedWith("Mint Amount exceeds the Available Mint Amount");
     });
 
+    it("mint: Non Whitelisted cant mint", async function () {
+        //Explicitly declare Contract connection as a signer which is not whitelisted
+        //In this case addr3
+        await expect(this.contract.connect(this.addr3).mint(this.merkle_tree.getProof(this.addr1.address),1, { value: ethers.utils.parseEther("0.05") })).to.be.revertedWith("Invalid Merkle Proof");
+    });
+
+    it("mint: Whitelisted cant mint if they already claimed", async function () {
+        //Mint one so that the mint is claimed
+        await this.contract.connect(this.owner).mint(this.merkle_tree.getProof(this.owner.address),1);
+        //mint another to check if its already claimed
+        await expect(this.contract.connect(this.owner).mint(this.merkle_tree.getProof(this.owner.address),1)).to.be.revertedWith("Address already claimed");
+    });
+
+    it("mint: Everyone can mint unlimited times after the presale is over", async function () {
+        //end the presale
+        await this.contract.setWhiteListActive(false);
+
+        await this.contract.connect(this.owner).mint(this.merkle_tree.getProof(this.owner.address),1, { value: 0 });
+        await this.contract.connect(this.addr1).mint(this.merkle_tree.getProof(this.addr1.address),1, { value: ethers.utils.parseEther("0.05") });
+        await this.contract.connect(this.addr3).mint(this.merkle_tree.getProof(this.addr1.address),1, { value: ethers.utils.parseEther("0.05") });
+
+        //to test wether the different adresses can mint multiple times
+        await this.contract.connect(this.owner).mint(this.merkle_tree.getProof(this.owner.address),1, { value: 0 });
+        await this.contract.connect(this.addr1).mint(this.merkle_tree.getProof(this.addr1.address),1, { value: ethers.utils.parseEther("0.05") });
+        await this.contract.connect(this.addr3).mint(this.merkle_tree.getProof(this.addr1.address),1, { value: ethers.utils.parseEther("0.05") });
+    });
+
+
     it("mint: Owner mints for free", async function () {
-
-
         //Normaly contract alway connects with first Signer
         await this.contract.connect(this.owner).mint(this.merkle_tree.getProof(this.owner.address),1, { value: 0 });
     });
