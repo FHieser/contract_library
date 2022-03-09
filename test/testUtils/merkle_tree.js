@@ -10,15 +10,9 @@ const keccak256 = require('keccak256');
 // 2. Collect list of wallet addresses from competition, raffle, etc.
 // Store list of addresses in some data sheeet (Google Sheets or Excel)
 const whitelistAddresses = [
-  "0xD5E5A6eb56e4B41661Dccc225d1B3C9Ed93D952C",//original
-  "0x14590dF80495714d708FBad4d11f8582a10226a8",//test
-  "0X5B38DA6A701C568545DCFCB03FCB875F56BEDDC4",
-  "0X5A641E5FB72A2FD9137312E7694D42996D689D99",
-  "0XDCAB482177A592E424D1C8318A464FC922E8DE40",
-  "0X6E21D37E07A6F7E53C7ACE372CEC63D4AE4B6BD0",
-  "0X09BAAB19FC77C19898140DADD30C4685C597620B",
-  "0XCC4C29997177253376528C05D3DF91CF2D69061A",
-  "0xdD870fA1b7C4700F2BD7f44238821C26f7392148" // The address in remix
+  "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+  "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+  "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"
 ];
 
 // 3. Create a new array of `leafNodes` by hashing all indexes of the `whitelistAddresses`
@@ -39,9 +33,7 @@ function getProof(claimingAddress) {
 
   const hexProof = merkleTree.getHexProof(claimingAddress);
 
-  const isVerified = merkleTree.verify(hexProof, claimingAddress, rootHash);
-
-  return {isVerified, hexProof};
+  return hexProof;
 }
 
 function getRoot(){

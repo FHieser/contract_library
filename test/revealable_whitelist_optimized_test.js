@@ -42,53 +42,53 @@ describe("Revealable_Whitelist Unit Test", function () {
         //pause
         await this.contract.pause(true);
 
-        await expect(this.contract.mint(1)).to.be.revertedWith("Contract is paused");
+        await expect(this.contract.mint(this.merkle_tree.getProof(this.owner.address),1)).to.be.revertedWith("Contract is paused");
     });
 
     it("mint: Mint Amount less than 1", async function () {
-        await expect(this.contract.mint(0)).to.be.revertedWith("Mint Amount needs to be bigger than 0");
+        await expect(this.contract.mint(this.merkle_tree.getProof(this.owner.address),0)).to.be.revertedWith("Mint Amount needs to be bigger than 0");
     });
 
     //Max Mint Amount is 20
     it("mint: Mint Amount more than MaxMintAmount", async function () {
-        await expect(this.contract.mint(21)).to.be.revertedWith("Mint Amount exceeds the Maximum Allowed Mint Amount");
+        await expect(this.contract.mint(this.merkle_tree.getProof(this.owner.address),21)).to.be.revertedWith("Mint Amount exceeds the Maximum Allowed Mint Amount");
     });
 
     it("mint: Mint Amount more than AvailableMintAmount", async function () {
         //Set new maxMintAmount to 10000
         await this.contract.setmaxMintAmount(10000);
         //Mint to full capacity
-        await this.contract.mint(10000);
+        await this.contract.mint(this.merkle_tree.getProof(this.owner.address),10000);
         //Mint over limit
-        await expect(this.contract.mint(1)).to.be.revertedWith("Mint Amount exceeds the Available Mint Amount");
+        await expect(this.contract.mint(this.merkle_tree.getProof(this.owner.address),1)).to.be.revertedWith("Mint Amount exceeds the Available Mint Amount");
     });
 
     it("mint: Owner mints for free", async function () {
 
 
         //Normaly contract alway connects with first Signer
-        await this.contract.connect(this.owner).mint(1, { value: 0 });
+        await this.contract.connect(this.owner).mint(this.merkle_tree.getProof(this.owner.address),1, { value: 0 });
     });
 
     it("mint: Non Owner gets rejected with wrong value", async function () {
         //Explicitly declare Contract connection as a signer which is not the first one
         //In this case addr1
-        await expect(this.contract.connect(this.addr1).mint(1, { value: 0 })).to.be.revertedWith("Value for minting-transaction is to low");
+        await expect(this.contract.connect(this.addr1).mint(this.merkle_tree.getProof(this.addr1.address),1, { value: 0 })).to.be.revertedWith("Value for minting-transaction is to low");
     });
 
     it("mint: Non Owner can mint with correct value", async function () {
         //Explicitly declare Contract connection as a signer which is not the first one
         //In this case addr1
-        await this.contract.connect(this.addr1).mint(1, { value: ethers.utils.parseEther("0.05") });
+        await this.contract.connect(this.addr1).mint(this.merkle_tree.getProof(this.addr1.address),1, { value: ethers.utils.parseEther("0.05") });
     });
 
 
     it("walletOfOwner: check if after mint all the right tokens are minted", async function () {
 
         //Mint two as for the owner
-        await this.contract.connect(this.owner).mint(2);
+        await this.contract.connect(this.owner).mint(this.merkle_tree.getProof(this.owner.address),2);
         //test with other signer to for completionists sake
-        await this.contract.connect(this.addr1).mint(3, { value: ethers.utils.parseEther("0.15") });
+        await this.contract.connect(this.addr1).mint(this.merkle_tree.getProof(this.addr1.address),3, { value: ethers.utils.parseEther("0.15") });
 
         //Expect for owner the token ids 0 and 1
         let expectedOwnerTokens = [0, 1];
@@ -116,7 +116,7 @@ describe("Revealable_Whitelist Unit Test", function () {
 
     it("tokenURI: Not revealed yet -> Returns notRevealedURI", async function () {
         //mint a two token
-        await this.contract.mint(2);
+        await this.contract.mint(this.merkle_tree.getProof(this.owner.address),2);
 
         //We didn´t change the revealed status so it should return the notRevealedURI
         expect(await this.contract.tokenURI(0)).to.equal(this.notRevealedURI);
@@ -125,7 +125,7 @@ describe("Revealable_Whitelist Unit Test", function () {
 
     it("tokenURI: Revealed -> Returns directURI + Filename of metadata", async function () {
         //mint a two token
-        await this.contract.mint(2);
+        await this.contract.mint(this.merkle_tree.getProof(this.owner.address),2);
 
         //Revealing the metadata
         await this.contract.reveal();
@@ -141,7 +141,7 @@ describe("Revealable_Whitelist Unit Test", function () {
 
     it("withdraw: correctly withdraw funds", async function () {
         //mint 3 tokens
-        await this.contract.connect(this.addr1).mint(3, { value: ethers.utils.parseEther("0.15") });
+        await this.contract.connect(this.addr1).mint(this.merkle_tree.getProof(this.addr1.address),3, { value: ethers.utils.parseEther("0.15") });
 
         //Check if withdraw changed the balance of the owner by the amount of paid eth
         await expect(await this.contract.withdraw()).to.changeEtherBalance(this.owner, ethers.utils.parseEther("0.15"));
