@@ -26,6 +26,10 @@ describe("Revealable_Whitelist Unit Test", function () {
 
     //deploy contract
     beforeEach(async function () {
+
+        //setting MerkleTree
+        this.merkle_tree.setMerkleTree([this.owner.address, this.addr1.address, this.addr2.address])
+
         this.contract = await this.Contract.deploy(this.name, this.symbol, this.directURI, this.notRevealedURI, this.merkleRoot);
         await this.contract.deployed();
 
@@ -70,6 +74,13 @@ describe("Revealable_Whitelist Unit Test", function () {
     it("mint: Non Whitelisted cant mint", async function () {
         //Explicitly declare Contract connection as a signer which is not whitelisted
         //In this case addr3
+        await expect(this.contract.connect(this.addr3).mint(this.merkle_tree.getProof(this.addr3.address),1, { value: ethers.utils.parseEther("0.05") })).to.be.revertedWith("Invalid Merkle Proof");
+    });
+
+    it("mint: Non Whitelisted cant mint if he got a hexProof of a whitelisted", async function () {
+        //Explicitly declare Contract connection as a signer which is not whitelisted
+        //In this case addr3
+        //use hexproof of addr1 which is whitelisted
         await expect(this.contract.connect(this.addr3).mint(this.merkle_tree.getProof(this.addr1.address),1, { value: ethers.utils.parseEther("0.05") })).to.be.revertedWith("Invalid Merkle Proof");
     });
 
@@ -80,12 +91,16 @@ describe("Revealable_Whitelist Unit Test", function () {
         await expect(this.contract.connect(this.owner).mint(this.merkle_tree.getProof(this.owner.address),1)).to.be.revertedWith("Address already claimed");
     });
 
+
+
     it("mint: Everyone can mint unlimited times after the presale is over", async function () {
         //end the presale
         await this.contract.setWhiteListActive(false);
 
         await this.contract.connect(this.owner).mint(this.merkle_tree.getProof(this.owner.address),1, { value: 0 });
         await this.contract.connect(this.addr1).mint(this.merkle_tree.getProof(this.addr1.address),1, { value: ethers.utils.parseEther("0.05") });
+
+        //interesting: HexProof from addr1 and it still works
         await this.contract.connect(this.addr3).mint(this.merkle_tree.getProof(this.addr1.address),1, { value: ethers.utils.parseEther("0.05") });
 
         //to test wether the different adresses can mint multiple times
@@ -166,6 +181,19 @@ describe("Revealable_Whitelist Unit Test", function () {
 
         expect(await this.contract.tokenURI(0)).to.equal(tokenString1);
         expect(await this.contract.tokenURI(1)).to.equal(tokenString2);
+    });
+
+    it("setMerkleRoot: change Merkle Root and see if it still works", async function () {
+
+        //setting new MerkleTree
+        this.merkle_tree.setMerkleTree([this.owner.address, this.addr1.address])
+        
+        //change MerkleRoot
+        this.contract.setMerkleRoot(this.merkle_tree.getRoot());
+
+        await this.contract.connect(this.owner).mint(this.merkle_tree.getProof(this.owner.address),1, { value: 0 });
+        await this.contract.connect(this.addr1).mint(this.merkle_tree.getProof(this.addr1.address),1, { value: ethers.utils.parseEther("0.05") });
+        await expect(this.contract.connect(this.addr2).mint(this.merkle_tree.getProof(this.addr2.address),1, { value: ethers.utils.parseEther("0.05") })).to.be.revertedWith("Invalid Merkle Proof");
     });
 
 
