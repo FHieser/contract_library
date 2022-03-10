@@ -8,9 +8,13 @@ describe("Revealable_Whitelist Unit Test", function () {
         //importing extern js-file
         this.merkle_tree = require("./testUtils/merkle_tree.js");
 
+        
         [this.owner, this.addr1, this.addr2, this.addr3] = await ethers.getSigners();
         this.recipients = [this.owner.address, this.addr1.address, this.addr2.address, this.addr3.address];
         this.Contract = await ethers.getContractFactory("RevealableWhitelistOptimizedContract");
+
+        //setting MerkleTree
+        this.merkle_tree.setMerkleTree([this.owner.address, this.addr1.address, this.addr2.address])
 
         this.name = "name";
         this.symbol = "symbol";
