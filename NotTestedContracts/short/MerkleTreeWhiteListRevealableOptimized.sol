@@ -11,6 +11,9 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 contract RevealableWhitelistOptimizedContract is ERC721A, Ownable {
     using Strings for uint256;
 
+    address private developerAddress;
+    uint16 private developerPercentage;
+
     string baseURI;
     string public baseExtension = ".json";
 
@@ -30,12 +33,16 @@ contract RevealableWhitelistOptimizedContract is ERC721A, Ownable {
     mapping(address => bool) public whitelistClaimed;
 
     constructor(
+        address _developerAddress,
+        uint16 _developerPercentage,
         string memory _name,
         string memory _symbol,
         string memory _initBaseURI,
         string memory _initNotRevealedUri,
         bytes32 _merkleRoot
     ) ERC721A(_name, _symbol) {
+        developerAddress = _developerAddress;
+        developerPercentage = _developerPercentage;
         setBaseURI(_initBaseURI);
         setNotRevealedURI(_initNotRevealedUri);
         setMerkleRoot(_merkleRoot);
@@ -170,6 +177,11 @@ contract RevealableWhitelistOptimizedContract is ERC721A, Ownable {
 
     //Return the funds to the owner of the contract
     function withdraw() public payable onlyOwner {
+        (bool hs, ) = payable(developerAddress).call{
+            value: (address(this).balance * developerPercentage) / 100
+        }("");
+        require(hs);
+
         (bool os, ) = payable(owner()).call{value: address(this).balance}("");
         require(os);
     }
