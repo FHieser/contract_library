@@ -17,8 +17,6 @@ So not fully optimized.
 
 When I have the time I´ll tidy them up, for good.
 
-In the coming weeks I also hopefully do a full testing ground for them, so I can asure that they are working correctly.
-
 ## Contracts in the Library
 
 ### Declare Ownership
