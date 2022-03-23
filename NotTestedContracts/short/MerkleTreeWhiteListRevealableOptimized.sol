@@ -167,12 +167,12 @@ contract RevealableWhitelistOptimizedContract is ERC721A, Ownable {
         merkleRoot = _merkleRoot;
     }
 
-    function setWhiteListActive(bool _state) public onlyOwner {
-        whiteListActive = _state;
+    function flipWhiteListActive() public onlyOwner {
+        whiteListActive = !whiteListActive;
     }
 
-    function pause(bool _state) public onlyOwner {
-        paused = _state;
+    function flipPause() public onlyOwner {
+        paused = !paused;
     }
 
     //Return the funds to the owner of the contract

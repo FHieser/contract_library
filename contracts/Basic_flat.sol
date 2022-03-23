@@ -1542,8 +1542,8 @@ contract BasicNFT is ERC721A, Ownable {
         baseExtension = _newBaseExtension;
     }
 
-    function pause(bool _state) public onlyOwner {
-        paused = _state;
+    function flipPause() public onlyOwner {
+        paused = !paused;
     }
 
     function withdraw() public payable onlyOwner {
