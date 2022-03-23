@@ -19,8 +19,10 @@ describe("Basic_flat Unit Test", function () {
         this.contract = await this.Contract.deploy(this.name, this.symbol, this.directURI);
         await this.contract.deployed();
 
-        //unpause
-        await this.contract.pause(false);
+        //unpause if paused
+        if (await this.contract.paused()) {
+            await this.contract.flipPause();
+        }
     })
 
 
@@ -34,7 +36,7 @@ describe("Basic_flat Unit Test", function () {
 
     it("mint: while paused", async function () {
         //pause
-        await this.contract.pause(true);
+        await this.contract.flipPause();
 
         await expect(this.contract.mint(1)).to.be.revertedWith("Contract is paused");
     });

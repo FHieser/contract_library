@@ -35,8 +35,11 @@ describe("Revealable_Whitelist Unit Test", function () {
         this.contract = await this.Contract.deploy(this.developerAddress, this.developerPercentage, this.name, this.symbol, this.directURI, this.notRevealedURI, this.merkleRoot);
         await this.contract.deployed();
 
-        //unpause
-        await this.contract.pause(false);
+        //unpause if paused
+        if (await this.contract.paused()) {
+            await this.contract.flipPause();
+        }
+
     })
 
 
@@ -50,7 +53,7 @@ describe("Revealable_Whitelist Unit Test", function () {
 
     it("mint: while paused", async function () {
         //pause
-        await this.contract.pause(true);
+        await this.contract.flipPause();
 
         await expect(this.contract.mint(this.merkle_tree.getProof(this.owner.address), 1)).to.be.revertedWith("Contract is paused");
     });
@@ -97,7 +100,7 @@ describe("Revealable_Whitelist Unit Test", function () {
 
     it("mint: Everyone can mint unlimited times after the presale is over", async function () {
         //end the presale
-        await this.contract.setWhiteListActive(false);
+        await this.contract.flipWhiteListActive();
 
         await this.contract.connect(this.owner).mint(this.merkle_tree.getProof(this.owner.address), 1, { value: 0 });
         await this.contract.connect(this.addr1).mint(this.merkle_tree.getProof(this.addr1.address), 1, { value: ethers.utils.parseEther("0.05") });
@@ -208,11 +211,11 @@ describe("Revealable_Whitelist Unit Test", function () {
         //Portion that the owner should get
         let ownerPortion = 0.15 - devPortion;
 
-        
+
         await expect(await this.contract.withdraw())
-        //Check if withdraw changed the balance of the owner by the correct amount
-        .to.changeEtherBalance(this.owner, ethers.utils.parseEther(ownerPortion.toString()))
-        //Check if withdraw changed the balance of the developer by the correct amount
-        .to.changeEtherBalance(this.addr1, ethers.utils.parseEther(devPortion.toString()));
+            //Check if withdraw changed the balance of the owner by the correct amount
+            .to.changeEtherBalance(this.owner, ethers.utils.parseEther(ownerPortion.toString()))
+            //Check if withdraw changed the balance of the developer by the correct amount
+            .to.changeEtherBalance(this.addr1, ethers.utils.parseEther(devPortion.toString()));
     });
 });
