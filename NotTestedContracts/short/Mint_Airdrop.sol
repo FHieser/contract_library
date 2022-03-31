@@ -80,7 +80,7 @@ abstract contract AdminMod is Ownable {
 
 import "erc721a/contracts/ERC721A.sol";
 
-contract MintAirdrop is ERC721A, Ownable {
+contract MintAirdrop is ERC721A, AdminMod {
     using Strings for uint256;
 
     string baseURI;
