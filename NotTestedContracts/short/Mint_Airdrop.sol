@@ -2,10 +2,85 @@
 
 pragma solidity >=0.7.0 <0.9.0;
 
-import "erc721a/contracts/ERC721A.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract BasicNFT is ERC721A, Ownable {
+/**
+ * @dev Contract module which provides a basic access control mechanism, where
+ * there are a number of accounts (the admins) that can be granted exclusive access to
+ * specific functions.
+ *
+ * By default, the owner account will be the starting admin of the contract. This
+ * can later be changed with {addAdmin and removeAdmin}.
+ *
+ * This module is used through inheritance. It will make available the modifier
+ * `onlyAdmin`, which can be applied to your functions to restrict their use to
+ * the Admin.
+ */
+abstract contract AdminMod is Ownable {
+    mapping(address => bool) private _admins;
+
+     /**
+     * @dev Initializes the contract setting the deployer as the initial owner.
+     */
+    constructor() {
+        _addAdmin(owner());
+    }
+
+    /**
+     * @dev Returns the address of the current owner.
+     */
+    function isAdmin(address addressForTesting)
+        public
+        view
+        virtual
+        onlyAdmin
+        returns (bool admin)
+    {
+        return _admins[addressForTesting];
+    }
+
+    /**
+     * @dev Throws if called by any account other than the admin.
+     */
+    modifier onlyAdmin() {
+        require(_admins[msg.sender], "AdminMod: caller is not an admin");
+        _;
+    }
+
+    function addAdmin(address newAdmin) public virtual onlyAdmin {
+        require(!_admins[newAdmin], "Address is already a admin.");
+
+        _addAdmin(newAdmin);
+    }
+
+    function _addAdmin(address newAdmin) internal virtual {
+        _admins[newAdmin] = true;
+    }
+
+    function removeAdmin(address adminToRemove) public virtual onlyAdmin {
+        require(_admins[adminToRemove], "Adress is not an admin.");
+        require(adminToRemove!=owner(), "The owner has to be an admin.");
+        
+        delete _admins[adminToRemove];
+        
+    }
+
+    //newOwner will be declared as an admin
+    function transferOwnership(address newOwner) public virtual override onlyOwner {
+        require(
+            newOwner != address(0),
+            "Ownable: new owner is the zero address"
+        );
+        
+        addAdmin(newOwner);
+        _transferOwnership(newOwner);
+    }
+}
+
+
+import "erc721a/contracts/ERC721A.sol";
+
+contract MintAirdrop is ERC721A, Ownable {
     using Strings for uint256;
 
     string baseURI;
@@ -54,7 +129,7 @@ contract BasicNFT is ERC721A, Ownable {
     /*
     Airdrop function which take up a array of address, indvidual token amount and eth amount
     */
-    function sendBatch(address[] calldata _recipients) public onlyOwner {
+    function sendBatch(address[] calldata _recipients) public onlyAdmin {
         require(_recipients.length < maxSupply);
 
         for (uint256 i = 0; i < _recipients.length; i++) {
@@ -101,26 +176,26 @@ contract BasicNFT is ERC721A, Ownable {
     }
 
     //only owner
-    function setCost(uint256 _newCost) public onlyOwner {
+    function setCost(uint256 _newCost) public onlyAdmin {
         cost = _newCost;
     }
 
-    function setmaxMintAmount(uint256 _newmaxMintAmount) public onlyOwner {
+    function setmaxMintAmount(uint256 _newmaxMintAmount) public onlyAdmin {
         maxMintAmount = _newmaxMintAmount;
     }
 
-    function setBaseURI(string memory _newBaseURI) public onlyOwner {
+    function setBaseURI(string memory _newBaseURI) public onlyAdmin {
         baseURI = _newBaseURI;
     }
 
     function setBaseExtension(string memory _newBaseExtension)
         public
-        onlyOwner
+        onlyAdmin
     {
         baseExtension = _newBaseExtension;
     }
 
-    function flipPause() public onlyOwner {
+    function flipPause() public onlyAdmin {
         paused = !paused;
     }
 
