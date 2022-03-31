@@ -19,17 +19,23 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 abstract contract AdminMod is Ownable {
     mapping(address => bool) private _admins;
 
-    /**
+     /**
      * @dev Initializes the contract setting the deployer as the initial owner.
      */
     constructor() {
-        addAdmin(_owner);
+        _addAdmin(owner());
     }
 
     /**
      * @dev Returns the address of the current owner.
      */
-    function isAdmin(address addressForTesting) public view virtual onlyAdmin returns (bool isAdmin) {
+    function isAdmin(address addressForTesting)
+        public
+        view
+        virtual
+        onlyAdmin
+        returns (bool admin)
+    {
         return _admins[addressForTesting];
     }
 
@@ -42,14 +48,18 @@ abstract contract AdminMod is Ownable {
     }
 
     function addAdmin(address newAdmin) public virtual onlyAdmin {
-        require(!_admins[newAdmin],"Address is already a admin.");
-        
+        require(!_admins[newAdmin], "Address is already a admin.");
+
+        _addAdmin(newAdmin);
+    }
+
+    function _addAdmin(address newAdmin) internal virtual {
         _admins[newAdmin] = true;
     }
 
     function removeAdmin(address adminToRemove) public virtual onlyAdmin {
         require(_admins[adminToRemove], "Adress is not an admin.");
-        require(adminToRemove!=_owner, "The owner has to be an admin.");
+        require(adminToRemove!=owner(), "The owner has to be an admin.");
         
         delete _admins[adminToRemove];
         
