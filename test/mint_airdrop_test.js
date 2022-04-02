@@ -16,7 +16,7 @@ describe("Basic_flat Unit Test", function () {
     })
     //deploy contract
     beforeEach(async function () {
-        this.contract = await this.Contract.deploy(this.name, this.symbol, this.directURI);
+        this.contract = await this.Contract.deploy(this.name, this.symbol, this.directURI, this.addr1.address);
         await this.contract.deployed();
 
         //unpause if paused
@@ -80,7 +80,7 @@ describe("Basic_flat Unit Test", function () {
     //-----------------------------------------------------------------------------
     //ERC721a Functinality Test
 
-    
+
     it("constructor: Check Name and Symbol", async function () {
         //Check Name
         expect(await this.contract.name()).to.equal(this.name);
@@ -177,13 +177,21 @@ describe("Basic_flat Unit Test", function () {
         expect(await this.contract.tokenURI(1)).to.equal(tokenString2);
     });
 
-    
+
     it("withdraw: correctly withdraw funds", async function () {
         //mint 3 tokens
         await this.contract.connect(this.addr1).mint(3, { value: ethers.utils.parseEther("0.15") });
+        //Portion that the dev should get
+        let devPortion = 0.15 * (12 / 100)
+        //Portion that the owner should get
+        let ownerPortion = 0.15 - devPortion;
 
-        //Check if withdraw changed the balance of the owner by the amount of paid eth
-        await expect(await this.contract.withdraw()).to.changeEtherBalance(this.owner, ethers.utils.parseEther("0.15"));
+
+        await expect(await this.contract.withdraw())
+            //Check if withdraw changed the balance of the owner by the correct amount
+            .to.changeEtherBalance(this.owner, ethers.utils.parseEther(ownerPortion.toString()))
+            //Check if withdraw changed the balance of the developer by the correct amount
+            .to.changeEtherBalance(this.addr1, ethers.utils.parseEther(devPortion.toString()));
     });
 
     //-----------------------------------------------------------------------------

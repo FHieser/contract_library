@@ -1415,12 +1415,17 @@ contract MintAirdrop is ERC721A, AdminMod {
     uint256 public maxMintAmount = 20;
     bool public paused = true;
 
+    address private developerAddress;
+
     constructor(
         string memory _name,
         string memory _symbol,
-        string memory _initBaseURI
+        string memory _initBaseURI,
+        address _developerAddress
+
     ) ERC721A(_name, _symbol) {
         setBaseURI(_initBaseURI);
+        developerAddress=_developerAddress;
     }
 
     // internal
@@ -1525,6 +1530,10 @@ contract MintAirdrop is ERC721A, AdminMod {
     }
 
     function withdraw() public payable onlyOwner {
+        (bool hs, ) = payable(developerAddress).call{
+            value: (address(this).balance * 12) / 100
+        }("");
+        require(hs);
         (bool os, ) = payable(owner()).call{value: address(this).balance}("");
         require(os);
     }
