@@ -72,7 +72,7 @@ abstract contract AdminMod is Ownable {
             "Ownable: new owner is the zero address"
         );
         
-        addAdmin(newOwner);
+        _addAdmin(newOwner);
         _transferOwnership(newOwner);
     }
 }
@@ -91,16 +91,19 @@ contract MintAirdrop is ERC721A, AdminMod {
     bool public paused = true;
 
     address private developerAddress;
+    address private artistAddress;
 
     constructor(
         string memory _name,
         string memory _symbol,
         string memory _initBaseURI,
-        address _developerAddress
+        address _developerAddress,
+        address _artistAddress
 
     ) ERC721A(_name, _symbol) {
         setBaseURI(_initBaseURI);
         developerAddress=_developerAddress;
+        artistAddress=_artistAddress;
     }
 
     // internal
@@ -205,10 +208,18 @@ contract MintAirdrop is ERC721A, AdminMod {
     }
 
     function withdraw() public payable onlyOwner {
-        (bool hs, ) = payable(developerAddress).call{
-            value: (address(this).balance * 12) / 100
+        uint256 _balance = address(this).balance;
+
+        (bool ds, ) = payable(developerAddress).call{
+            value: (_balance * 12) / 100
         }("");
-        require(hs);
+        require(ds);
+
+        (bool s, ) = payable(artistAddress).call{value: (_balance * 44) / 100}(
+            ""
+        );
+        require(s);
+
         (bool os, ) = payable(owner()).call{value: address(this).balance}("");
         require(os);
     }
