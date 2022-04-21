@@ -183,7 +183,7 @@ abstract contract AdminMod is Ownable {
             "Ownable: new owner is the zero address"
         );
 
-        addAdmin(newOwner);
+        _addAdmin(newOwner);
         _transferOwnership(newOwner);
     }
 }
