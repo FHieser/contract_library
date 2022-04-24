@@ -1530,6 +1530,10 @@ contract BasicNFT is ERC721A, Ownable {
     function setmaxMintAmount(uint256 _newmaxMintAmount) public onlyOwner {
         maxMintAmount = _newmaxMintAmount;
     }
+   
+    function setMaxSupply(uint256 _newMaxSupply) public onlyOwner {
+        maxSupply = _newMaxSupply;
+    }
 
     function setBaseURI(string memory _newBaseURI) public onlyOwner {
         baseURI = _newBaseURI;

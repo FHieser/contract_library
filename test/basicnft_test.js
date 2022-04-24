@@ -51,8 +51,8 @@ describe("Basic_flat Unit Test", function () {
     });
 
     it("mint: Mint Amount more than AvailableMintAmount", async function () {
-        //Set new maxMintAmount to 10000
-        await this.contract.setmaxMintAmount(10);
+        //Set new Max Supply to 10
+        await this.contract.setMaxSupply(10);
         //Mint to full capacity
         await this.contract.mint(10);
         //Mint over limit
