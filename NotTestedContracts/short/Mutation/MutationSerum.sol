@@ -27,7 +27,7 @@ contract MutationSerum is ERC1155, Ownable {
         emit SetBaseURI(baseURI);
     }
 
-    function mint(uint256 _mintAmount) external payable {
+    function mintSerum(uint256 _mintAmount) external payable {
         require(!paused, "Contract is paused");
         require(_mintAmount > 0, "Mint Amount needs to be bigger than 0");
         require(
