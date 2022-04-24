@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 //Interface to Link up the Serum Contract
-interface MutationSerum {
+interface IMutationSerum {
     function burnSerumForAddress(address burnFromTokenAddress) external;
 
     function balanceOf(address account, uint256 id)
@@ -16,7 +16,7 @@ interface MutationSerum {
 }
 
 //Interface to Link up the original NFT Contract that gets to be mutated
-interface OriginContract {
+interface IOriginContract {
     function ownerOf(uint256 tokenId) external view returns (address);
 }
 
@@ -29,8 +29,8 @@ contract MutatedNFT is ERC721Enumerable, Ownable {
 
     bool public paused = true;
     bool public revealed = false;
-    MutationSerum private immutable serum;
-    OriginContract private immutable origin;
+    IMutationSerum private immutable serum;
+    IOriginContract private immutable origin;
 
     constructor(
         string memory _name,
@@ -42,8 +42,8 @@ contract MutatedNFT is ERC721Enumerable, Ownable {
     ) ERC721(_name, _symbol) {
         setBaseURI(_initBaseURI);
         setNotRevealedURI(_initNotRevealedUri);
-        serum = MutationSerum(_mutationSerumAddress);
-        origin = OriginContract(_collectionToMutateAddress);
+        serum = IMutationSerum(_mutationSerumAddress);
+        origin = IOriginContract(_collectionToMutateAddress);
     }
 
     // internal
