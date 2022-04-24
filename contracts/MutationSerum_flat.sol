@@ -1148,7 +1148,7 @@ contract MutationSerum is ERC1155, Ownable {
     uint256 public cost = 0.05 ether;
     uint256 public maxMintAmount = 5;
     uint256 public maxSupply = 1000;
-    uint256 public serumSupplyCounter = 1;
+    uint256 public serumSupplyCounter = 0;
     bool public paused = true;
 
     mapping(uint256 => bool) public validSerumTypes;
@@ -1209,6 +1209,10 @@ contract MutationSerum is ERC1155, Ownable {
 
     function setmaxMintAmount(uint256 _newmaxMintAmount) public onlyOwner {
         maxMintAmount = _newmaxMintAmount;
+    }
+
+    function setMaxSupply(uint256 _newMaxSupply) public onlyOwner {
+        maxSupply = _newMaxSupply;
     }
 
     function setBaseExtension(string memory _newBaseExtension)
