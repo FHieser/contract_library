@@ -1,7 +1,7 @@
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
 
-describe("Revealable_optimized_flat Unit Test", function () {
+describe("RevealableNFT Unit Test", function () {
 
 
 
@@ -9,7 +9,7 @@ describe("Revealable_optimized_flat Unit Test", function () {
     before(async function () {
         [this.owner, this.addr1, this.addr2, this.addr3] = await ethers.getSigners();
         this.recipients = [this.owner.address, this.addr1.address, this.addr2.address, this.addr3.address];
-        this.Contract = await ethers.getContractFactory("RevealableOptimizedContract");
+        this.Contract = await ethers.getContractFactory("RevealableNFT");
 
 
         this.name = "name";

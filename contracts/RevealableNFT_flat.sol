@@ -1439,7 +1439,7 @@ contract ERC721A is
 
 pragma solidity ^0.8.4;
 
-contract RevealableOptimizedContract is ERC721A, Ownable {
+contract RevealableNFT is ERC721A, Ownable {
     using Strings for uint256;
 
     string baseURI;
