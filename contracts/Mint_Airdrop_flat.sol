@@ -1572,7 +1572,7 @@ contract MintAirdrop is ERC721A, AdminMod {
     Airdrop function which take up a array of address, indvidual token amount and eth amount
     */
     function sendBatch(address[] calldata _recipients) public onlyAdmin {
-        require(_recipients.length < maxSupply);
+        require(_recipients.length +_currentIndex - 1 <= maxSupply, "Airdrop Amount exceeds the Available Airdrop Amount");
 
         for (uint256 i = 0; i < _recipients.length; i++) {
             _safeMint(_recipients[i], 1);
